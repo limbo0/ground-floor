@@ -1,0 +1,37 @@
+{
+    "manifest_version": 3,
+    "name": "Ground Floor",
+    "version": "3.0",
+    "description": "A quiet mirror for your attention and your writing.",
+    "permissions": [
+        "storage",
+        "cookies",
+        "tabs"
+    ],
+    "host_permissions": [
+        "https://substack.com/*",
+        "https://*.substack.com/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_title": "Ground Floor"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://substack.com/*",
+                "https://*.substack.com/*"
+            ],
+            "js": [
+                "content.js"
+            ],
+            "css": [
+                "styles.css"
+            ],
+            "run_at": "document_idle"
+        }
+    ]
+}
