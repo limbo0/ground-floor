@@ -10,7 +10,8 @@
     ],
     "host_permissions": [
         "https://substack.com/*",
-        "https://*.substack.com/*"
+        "https://*.substack.com/*",
+        "https://letters.thedankoe.com/*"
     ],
     "background": {
         "service_worker": "background.js"

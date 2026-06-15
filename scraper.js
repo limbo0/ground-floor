@@ -230,8 +230,8 @@ async function fetchPublishedPosts(handle, onProgress) {
         const limit = 25;
 
         while (true) {
-            // const url = `https://${handle}.substack.com/api/v1/posts?limit=${limit}&offset=${offset}`;
-            const url = `https://theslowai.substack.com/api/v1/posts?limit=${limit}&offset=${offset}`;
+            const url = `https://${handle}.substack.com/api/v1/posts?limit=${limit}&offset=${offset}`;
+            // const url = `https://theslowai.substack.com/api/v1/posts?limit=${limit}&offset=${offset}`;
             try {
                 const usersPostsApiResponse = await apiCall(url);
                 console.log("usersPostsApiResponse:", usersPostsApiResponse);
@@ -257,12 +257,13 @@ async function fetchPublishedPosts(handle, onProgress) {
 
 // Fetch comments for a single post
 async function fetchCommentsOfPost(handle, postId) {
+    console.log("Fetching comments for post: ", postId);
     try {
-        // const url = `https://${handle}.substack.com/api/v1/post/${postId}/comments?all_comments=true&sort=best_first`;
-        const url = `https://theslowai.substack.com/api/v1/post/${postId}/comments?all_comments=true&sort=best_first`;
+        const url = `https://${handle}.substack.com/api/v1/post/${postId}/comments?all_comments=true&sort=best_first`;
+        // const url = `https://theslowai.substack.com/api/v1/post/${postId}/comments?all_comments=true&sort=best_first`;
         const writersCommentsApiResponse = await apiCall(url);
         const listOfComments = writersCommentsApiResponse?.comments || [];
-        console.log("Post comments:", postId, "->", listOfComments.length);
+        console.log(`Post:${postId} has ${listOfComments.length} comments`);
         return listOfComments;
     } catch (e) {
         return [];
@@ -301,6 +302,7 @@ async function fetchReaderPosts(handle) {
 // Parse a comment into a reader engagement record
 // Substack post comments have all author fields directly on the comment object
 function parseComment(comment, postId, postDate, postTitle) {
+    console.log("Parsing comments");
     const handle = comment?.handle || comment?.user_slug || null;
     const name = comment?.name || handle || "Unknown";
     const photo = comment?.photo_url || null;
@@ -310,6 +312,7 @@ function parseComment(comment, postId, postDate, postTitle) {
 
     const date = comment?.date || comment?.edited_at || postDate;
 
+    console.log(`Extracted data after parsing comment:\n handle: ${handle} name: ${name}`);
     return {
         handle,
         name,
