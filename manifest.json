@@ -11,7 +11,7 @@
     "host_permissions": [
         "https://substack.com/*",
         "https://*.substack.com/*",
-        "https://letters.thedankoe.com/*"
+        "http://localhost:3000/*"
     ],
     "background": {
         "service_worker": "background.js"

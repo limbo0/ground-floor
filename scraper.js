@@ -33,7 +33,7 @@ async function fetchAllNotes(userId, onProgress) {
     let page = 0;
 
     while (true) {
-        let url = `https://substack.com/api/v1/reader/feed/profile/${userId}?limit=${BATCH_SIZE}`;
+        const url = `http://localhost:3000/api/substack?handleID=${userId}`;
         if (cursor) url += `&cursor=${encodeURIComponent(cursor)}`;
 
         const data = await apiCall(url);
@@ -223,20 +223,18 @@ function loadSavedNotes() {
 
 // Fetch all published posts from the author's publication
 async function fetchPublishedPosts(handle, onProgress) {
-    console.log("Running fn fetchPublishedPosts");
+    console.log(`Running fn fetchPublishedPosts for user: ${handle} || maybe need alphabet name`);
     try {
         const writersPublishedPosts = [];
-        let offset = 0;
-        const limit = 25;
 
         while (true) {
-            const url = `https://${handle}.substack.com/api/v1/posts?limit=${limit}&offset=${offset}`;
-            // const url = `https://theslowai.substack.com/api/v1/posts?limit=${limit}&offset=${offset}`;
+            const url = `http://localhost:3000/api/substackPosts?handleID=${handle}`;
+
             try {
                 const usersPostsApiResponse = await apiCall(url);
                 console.log("usersPostsApiResponse:", usersPostsApiResponse);
 
-                const posts = usersPostsApiResponse?.posts || usersPostsApiResponse || [];
+                const posts = usersPostsApiResponse?.posts || usersPostsApiResponse?.data || [];
                 if (!Array.isArray(posts) || posts.length === 0) break;
 
                 writersPublishedPosts.push(...posts);
@@ -259,10 +257,11 @@ async function fetchPublishedPosts(handle, onProgress) {
 async function fetchCommentsOfPost(handle, postId) {
     console.log("Fetching comments for post: ", postId);
     try {
-        const url = `https://${handle}.substack.com/api/v1/post/${postId}/comments?all_comments=true&sort=best_first`;
-        // const url = `https://theslowai.substack.com/api/v1/post/${postId}/comments?all_comments=true&sort=best_first`;
+        // const url = `https://${handle}.substack.com/api/v1/post/${postId}/comments?all_comments=true&sort=best_first`;
+        const url = `http://localhost:3000/api/substackComments?handleID=${handle}&postID=${postId}`;
+
         const writersCommentsApiResponse = await apiCall(url);
-        const listOfComments = writersCommentsApiResponse?.comments || [];
+        const listOfComments = writersCommentsApiResponse?.data.comments || [];
         console.log(`Post:${postId} has ${listOfComments.length} comments`);
         return listOfComments;
     } catch (e) {

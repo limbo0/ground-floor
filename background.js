@@ -39,15 +39,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
                 headers["Cookie"] = `substack.sid=${cookie.value}`;
             }
             console.log("fetch api message url: ", msg.url);
+
+
             fetch(msg.url, {
                 method: "GET",
-                credentials: "include",
-                headers,
             })
                 .then(response => {
                     console.log("fetchAPI response: ", response);
 
-                    //FIX: the response type is not JSON 
+                    // FIX: the response type is not JSON 
                     const ct = response.headers.get("content-type") || "";
                     if (!ct.includes("application/json")) {
                         return sendResponse({ ok: false, error: `Non-JSON response (${response.status}): ${ct}` });
