@@ -33,11 +33,13 @@ async function fetchAllNotes(userId, onProgress) {
     let page = 0;
 
     while (true) {
-        const url = `http://localhost:3000/api/substack?handleID=${userId}`;
+        // `https://substack.com/api/v1/reader/feed/profile/${userId}?limit=25`
+        const url = `http://localhost:3000/api/substackNotes?handleID=${userId}`;
         if (cursor) url += `&cursor=${encodeURIComponent(cursor)}`;
 
         const data = await apiCall(url);
-        const items = data?.items || [];
+        const items = data?.data.items || [];
+        console.log("Fetched notes through proxy", items);
 
         if (items.length === 0) break;
 
@@ -134,6 +136,7 @@ function parseNote(raw) {
             : "0";
 
     const noteId = comment?.id || raw?.id || raw?.entity_key || null;
+    //TODO: Maybe this needs to point at proxy api
     const url = noteId
         ? `https://substack.com/note/${noteId}`
         : (comment?.canonical_url || raw?.canonical_url || "");
@@ -239,6 +242,7 @@ async function fetchPublishedPosts(handle, onProgress) {
 
                 writersPublishedPosts.push(...posts);
                 if (onProgress) onProgress({ stage: "posts", message: `Found ${writersPublishedPosts.length} posts…` });
+                // TODO: the browser console error here
                 if (posts.length < limit) break;
                 offset += limit;
                 await new Promise(r => setTimeout(r, 300));
